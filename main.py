@@ -8,11 +8,7 @@ import tempfile
 import subprocess
 from datetime import datetime, timezone, timedelta
 from xvfbwrapper import Xvfb
-
-try:
-    from DrissionPage import ChromiumPage, ChromiumOptions
-except ImportError:
-    pass
+from DrissionPage import ChromiumPage, ChromiumOptions
 
 try:
     import speech_recognition as sr
@@ -20,10 +16,13 @@ try:
 except ImportError:
     pass
 
+# ==============================================================================
+# 配置区域
+# ==============================================================================
 RENEW_URLS = [
-    "https://host2play.gratis/server/renew?i=848662f6-83b2-4ebb-afd1-e39f470a9fa8"
+    "https://host2play.gratis/server/renew?i=6666666-6666-6666-6666-66666666666",
+    # 添加更多链接
 ]
-
 
 MAX_CAPTCHA = 3
 MAX_RENEW_RETRIES_PER_URL = 50
