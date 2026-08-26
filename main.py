@@ -172,6 +172,8 @@ def get_warp_manager() -> WarpManager:
 
 # Telegram 通知
 def send_tg_photo(token, chat_id, photo_path, caption, parse_mode='HTML'):
+    token = (token or "").strip()
+    chat_id = (chat_id or "").strip()
     if not token or not chat_id:
         log("未配置 TG_BOT_TOKEN 或 TG_CHAT_ID，跳过通知。", "WARN")
         return
