@@ -171,28 +171,26 @@ def get_warp_manager() -> WarpManager:
     return _warp_manager
 
 # Telegram 通知
-def send_tg_photo(token, chat_id, photo_path, caption, parse_mode='HTML'):
+def send_tg_message(token, chat_id, text, parse_mode='HTML'):
     token = (token or "").strip()
     chat_id = (chat_id or "").strip()
     if not token or not chat_id:
         log("未配置 TG_BOT_TOKEN 或 TG_CHAT_ID，跳过通知。", "WARN")
         return
-    if not photo_path or not os.path.exists(photo_path):
-        log("未找到截图文件，跳过通知。", "WARN")
+    if not text:
+        log("通知内容为空，跳过。", "WARN")
         return
-    url = f"https://api.telegram.org/bot{token}/sendPhoto"
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
     try:
-        with open(photo_path, "rb") as photo_file:
-            response = requests.post(
-                url,
-                data={"chat_id": chat_id, "caption": caption, "parse_mode": parse_mode},
-                files={"photo": photo_file},
-                timeout=30,
-            )
+        response = requests.post(
+            url,
+            data={"chat_id": chat_id, "text": text, "parse_mode": parse_mode},
+            timeout=30,
+        )
         response.raise_for_status()
-        log("Telegram 图片通知发送成功")
+        log("Telegram 文本通知发送成功")
     except Exception as e:
-        log(f"Telegram 图片通知异常: {e}", "ERROR")
+        log(f"Telegram 文本通知异常: {e}", "ERROR")
 
 # 页面元素提取
 def get_server_name(page):
@@ -225,28 +223,23 @@ def get_expire_time(page):
             pass
     return "未知"
 
-# 构建通知
+# 构建通知（小窗口短文本）
 def build_notification(success, url, server_name, old_expire, new_expire=None, failure_reason=""):
     masked = mask_url(url)
     if success:
         lines = [
             "✅ 续订成功",
-            "",
             f"服务器：{server_name}",
             f"到期: {old_expire} -> {new_expire}",
-            f"URL: {url}",
         ]
     else:
         lines = [
             "❌ 续订失败",
-            "",
             f"服务器：{server_name}",
-            f"URL: {url}",
         ]
         if failure_reason:
             lines.append(f"失败原因: {failure_reason}")
-    lines.append("")
-    lines.append("Host2Play Auto Renew")
+    lines.append(masked)
     return "\n".join(lines)
 
 def capture_page_screenshot(page, file_name):
@@ -798,7 +791,7 @@ def main():
                 False, url, server_name, old_expire, failure_reason=failure_reason
             )
 
-        send_tg_photo(tg_token, tg_chat_id, screenshot, caption, parse_mode='HTML')
+        send_tg_message(tg_token, tg_chat_id, caption, parse_mode='HTML')
 
     log(f"全部完成，成功 {total_success}/{len(RENEW_URLS)} 个链接")
     if total_success < len(RENEW_URLS):
