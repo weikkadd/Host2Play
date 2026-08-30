@@ -23,7 +23,6 @@ RENEW_URLS = [
     "https://host2play.gratis/server/renew?i=b6c8f4a3-3298-4253-ab16-7b44b87444da",
     "https://host2play.gratis/server/renew?i=225238b5-7552-4715-90c2-2566991bd7de",
     "https://host2play.gratis/server/renew?i=82b23ca3-aa51-43da-8df0-655e89e1333a",
-    "https://host2play.gratis/se示例",
 ]
 
 MAX_CAPTCHA = 3
